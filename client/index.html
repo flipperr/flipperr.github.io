@@ -47,16 +47,16 @@ function create() {
     bullets.setAll('outOfBoundsKill', true);
 
     sprite = game.add.sprite(400, 300, 'char');
+
     sprite.anchor.set(0.5);
 
 
     game.physics.enable(sprite, Phaser.Physics.ARCADE);
 
     sprite.body.allowRotation = false;
-	
 		sprite.animations.add('left', [221,222,223], 10, true);
   sprite.animations.add('right', [246,247,248], 10, true);
-	sprite.body.collideWorldBounds = true;
+	  sprite.body.collideWorldBounds = true;
   cursors = game.input.keyboard.createCursorKeys();
 	 up = this.input.keyboard.addKey(Phaser.KeyCode.W);
 	left = this.input.keyboard.addKey(Phaser.KeyCode.A);
@@ -78,21 +78,21 @@ function update() {
 
 		if (left.isDown)
     {
-     
+      
         sprite.body.velocity.x = -150;
 
         sprite.animations.play('left');
     }
     else if (right.isDown)
     {
-        //  Move to the right
+
         sprite.body.velocity.x = 150;
 
         sprite.animations.play('right');
     }
 
 
-  
+
     if (up.isDown)
     {
         sprite.body.velocity.y = -150;
