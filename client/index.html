@@ -23,11 +23,13 @@ function preload() {
     game.load.image('arrow', 'assets/star.png');
     game.load.image('bullet', 'assets/bullet.png');
 		game.load.spritesheet('char', 'assets/char.png', 64, 64);
+		game.load.spritesheet('zombie', 'assets/zombie.png', 32, 48);
 
 }
 
 var sprite;
 var bullets;
+var enemies;
 
 var fireRate = 100;
 var nextFire = 0;
@@ -35,6 +37,12 @@ var nextFire = 0;
 function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    enemies = game.add.group();
+		enemies.enableBody = true;
+		for (var i = 0; i<50; i++)
+		{
+			  var enemy  = enemies.create(Math.floor((Math.random() * 800) + 1), Math.floor((Math.random() * 600) + 1), 'zombie');
+		}
 
     game.stage.backgroundColor = '#313131';
 
@@ -47,6 +55,7 @@ function create() {
     bullets.setAll('outOfBoundsKill', true);
 
     sprite = game.add.sprite(400, 300, 'char');
+
 
     sprite.anchor.set(0.5);
 
@@ -68,6 +77,8 @@ function create() {
 
 function update() {
 
+		game.physics.arcade.overlap(bullets, enemies, collectStar, null, this);
+
 
 		sprite.body.velocity.x = 0;
 		sprite.body.velocity.y = 0;
@@ -78,7 +89,7 @@ function update() {
 
 		if (left.isDown)
     {
-      
+
         sprite.body.velocity.x = -150;
 
         sprite.animations.play('left');
@@ -117,6 +128,15 @@ function fire() {
 
         game.physics.arcade.moveToPointer(bullet, 300);
     }
+
+}
+
+function collectStar (sprite,enemy) {
+
+    // Removes the star from the screen
+    enemy.kill();
+
+
 
 }
 
