@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+    <title>Phaser - Making your first game, part 9</title>
+	<script type="text/javascript" src="phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+
+
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+
+function preload() {
+
+    game.load.image('arrow', 'assets/star.png');
+    game.load.image('bullet', 'assets/bullet.png');
+		game.load.spritesheet('char', 'assets/char.png', 64, 64);
+
+}
+
+var sprite;
+var bullets;
+
+var fireRate = 100;
+var nextFire = 0;
+
+function create() {
+
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    game.stage.backgroundColor = '#313131';
+
+    bullets = game.add.group();
+    bullets.enableBody = true;
+    bullets.physicsBodyType = Phaser.Physics.ARCADE;
+
+    bullets.createMultiple(50, 'bullet');
+    bullets.setAll('checkWorldBounds', true);
+    bullets.setAll('outOfBoundsKill', true);
+
+    sprite = game.add.sprite(400, 300, 'char');
+
+    sprite.anchor.set(0.5);
+
+
+    game.physics.enable(sprite, Phaser.Physics.ARCADE);
+
+    sprite.body.allowRotation = false;
+		sprite.animations.add('left', [221,222,223], 10, true);
+  sprite.animations.add('right', [246,247,248], 10, true);
+  cursors = game.input.keyboard.createCursorKeys();
+	 up = this.input.keyboard.addKey(Phaser.KeyCode.W);
+	left = this.input.keyboard.addKey(Phaser.KeyCode.A);
+	right = this.input.keyboard.addKey(Phaser.KeyCode.D);
+	down = this.input.keyboard.addKey(Phaser.KeyCode.S);
+
+
+}
+
+function update() {
+
+
+		sprite.body.velocity.x = 0;
+		sprite.body.velocity.y = 0;
+    if (game.input.activePointer.isDown)
+    {
+        fire();
+    }
+
+		if (left.isDown)
+    {
+        //  Move to the left
+        sprite.body.velocity.x = -150;
+
+        sprite.animations.play('left');
+    }
+    else if (right.isDown)
+    {
+        //  Move to the right
+        sprite.body.velocity.x = 150;
+
+        sprite.animations.play('right');
+    }
+
+
+    //  Allow the player to jump if they are touching the ground.
+    if (up.isDown)
+    {
+        sprite.body.velocity.y = -150;
+    }
+
+		if (down.isDown)
+		{
+			sprite.body.velocity.y = +150;
+		}
+
+}
+
+function fire() {
+
+    if (game.time.now > nextFire && bullets.countDead() > 0)
+    {
+        nextFire = game.time.now + fireRate;
+
+        var bullet = bullets.getFirstDead();
+
+        bullet.reset(sprite.x - 8, sprite.y - 8);
+
+        game.physics.arcade.moveToPointer(bullet, 300);
+    }
+
+}
+
+function render() {
+
+    game.debug.text('bats', 32, 32);
+
+
+}
+
+
+
+
+</script>
+
+</body>
+</html>
